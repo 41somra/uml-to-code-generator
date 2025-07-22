@@ -2,8 +2,8 @@
 
 Convert UML class diagrams to production-ready source code in multiple programming languages. No server required - runs entirely in your browser!
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Available-green)](https://yourusername.github.io/model-to-code/)
-[![GitHub Pages](https://github.com/yourusername/model-to-code/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/yourusername/model-to-code/actions)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Available-green)](https://41somra.github.io/uml-to-code-generator/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/41somra/uml-to-code-generator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A powerful Python application that converts UML class diagrams into source code in multiple programming languages. Transform your visual models into working code instantly!
@@ -35,20 +35,20 @@ A powerful Python application that converts UML class diagrams into source code 
 
 ## 🌐 Try It Now
 
-**[🔗 Open Live Demo](https://yourusername.github.io/model-to-code/)**
+**[🔗 Open Live Demo](https://41somra.github.io/uml-to-code-generator/)**
 
 No installation required! The demo runs entirely in your browser.
 
 ## 🚀 Quick Start
 
 ### Option 1: Use Live Demo (Recommended)
-Simply visit **[the live demo](https://yourusername.github.io/model-to-code/)** and start generating code immediately!
+Simply visit **[the live demo](https://41somra.github.io/uml-to-code-generator/)** and start generating code immediately!
 
 ### Option 2: Run Locally
 
 ```bash
-git clone https://github.com/yourusername/model-to-code.git
-cd model-to-code
+git clone https://github.com/41somra/uml-to-code-generator.git
+cd uml-to-code-generator
 python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
