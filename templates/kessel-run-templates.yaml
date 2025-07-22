@@ -1,0 +1,422 @@
+# Kessel Run Templates for Air Force Mission Systems
+# Pre-built UML models for common Air Force use cases
+
+aircraft_maintenance:
+  name: "Aircraft Maintenance System"
+  description: "Complete aircraft maintenance tracking and scheduling system"
+  model: |
+    Aircraft:
+      id: int
+      tailNumber: string
+      model: string
+      status: string
+      lastMaintenanceDate: datetime
+      nextMaintenanceDate: datetime
+      flightHours: int
+      getMaintenanceHistory()
+      scheduleInspection(date: datetime)
+      updateStatus(status: string)
+      calculateNextMaintenance()
+
+    MaintenanceRecord:
+      id: int
+      aircraftId: int
+      maintenanceType: string
+      performedDate: datetime
+      performedBy: string
+      description: string
+      partsCost: float
+      laborHours: int
+      isCompleted: boolean
+      createRecord()
+      updateRecord()
+      markComplete()
+      generateReport()
+
+    MaintenanceTechnician:
+      id: int
+      employeeId: string
+      name: string
+      certification: string
+      specializations: list
+      isActive: boolean
+      assignMaintenance(recordId: int)
+      completeMaintenance(recordId: int)
+      updateCertification()
+      getWorkload()
+
+    InspectionSchedule:
+      id: int
+      aircraftId: int
+      inspectionType: string
+      scheduledDate: datetime
+      estimatedDuration: int
+      requiredCertifications: list
+      priority: string
+      createSchedule()
+      updateSchedule()
+      assignTechnician(techId: int)
+      postponeInspection(newDate: datetime)
+
+supply_chain:
+  name: "Supply Chain Management System"
+  description: "Military supply chain and inventory management"
+  model: |
+    InventoryItem:
+      id: int
+      nsn: string
+      partNumber: string
+      description: string
+      category: string
+      quantity: int
+      unitCost: float
+      location: string
+      isHazardous: boolean
+      updateQuantity(qty: int)
+      checkAvailability()
+      recordTransaction()
+      generateReport()
+
+    SupplyRequest:
+      id: int
+      requesterId: int
+      itemId: int
+      quantityRequested: int
+      urgencyLevel: string
+      requestDate: datetime
+      approvedDate: datetime
+      status: string
+      justification: string
+      submitRequest()
+      approveRequest()
+      fulfillRequest()
+      trackStatus()
+
+    Supplier:
+      id: int
+      name: string
+      cageCode: string
+      address: string
+      contactInfo: string
+      certifications: list
+      isActive: boolean
+      performanceRating: float
+      addSupplier()
+      updateInfo()
+      evaluatePerformance()
+      getSuppliesToItems()
+
+    LogisticsOperation:
+      id: int
+      operationType: string
+      fromLocation: string
+      toLocation: string
+      scheduledDate: datetime
+      items: list
+      transportMethod: string
+      status: string
+      planOperation()
+      executeOperation()
+      trackShipment()
+      updateStatus()
+
+personnel_management:
+  name: "Personnel Management System"  
+  description: "Military personnel records and management"
+  model: |
+    ServiceMember:
+      id: int
+      serviceNumber: string
+      rank: string
+      firstName: string
+      lastName: string
+      unit: string
+      mos: string
+      securityClearance: string
+      enlistmentDate: datetime
+      isActive: boolean
+      updateRank()
+      transferUnit()
+      updateClearance()
+      getServiceHistory()
+
+    Assignment:
+      id: int
+      serviceMemberId: int
+      unit: string
+      position: string
+      startDate: datetime
+      endDate: datetime
+      location: string
+      assignmentType: string
+      createAssignment()
+      extendAssignment()
+      completeAssignment()
+      transferAssignment()
+
+    Training:
+      id: int
+      serviceMemberId: int
+      courseId: string
+      courseName: string
+      completionDate: datetime
+      certificationLevel: string
+      isValid: boolean
+      expirationDate: datetime
+      enrollTraining()
+      completeTraining()
+      renewCertification()
+      getTrainingHistory()
+
+    PerformanceEvaluation:
+      id: int
+      serviceMemberId: int
+      evaluationPeriod: string
+      evaluatorId: int
+      overallRating: string
+      strengths: list
+      improvementAreas: list
+      goals: list
+      submitEvaluation()
+      reviewEvaluation()
+      acknowledgeEvaluation()
+      generateReport()
+
+intelligence_analysis:
+  name: "Intelligence Analysis System"
+  description: "Intelligence gathering and analysis platform"
+  model: |
+    IntelligenceReport:
+      id: int
+      classification: string
+      title: string
+      summary: string
+      analystId: int
+      sourceId: int
+      dateCreated: datetime
+      region: string
+      threatLevel: string
+      isVerified: boolean
+      createReport()
+      classifyReport()
+      verifyInformation()
+      disseminateReport()
+
+    DataSource:
+      id: int
+      sourceType: string
+      reliability: string
+      accessLevel: string
+      lastUpdated: datetime
+      isActive: boolean
+      contactInfo: string
+      credibilityScore: float
+      registerSource()
+      evaluateReliability()
+      updateCredibility()
+      deactivateSource()
+
+    ThreatAssessment:
+      id: int
+      threatId: string
+      threatType: string
+      severity: string
+      probability: float
+      targetAssets: list
+      mitigationStrategies: list
+      lastReviewed: datetime
+      assessThreat()
+      updateAssessment()
+      recommendActions()
+      trackMitigation()
+
+    AnalyticsEngine:
+      id: int
+      algorithmType: string
+      version: string
+      accuracy: float
+      isEnabled: boolean
+      lastTraining: datetime
+      processData(data: list)
+      generateInsights()
+      updateAlgorithm()
+      validateResults()
+
+mission_planning:
+  name: "Mission Planning System"
+  description: "Military mission planning and execution tracking"
+  model: |
+    Mission:
+      id: int
+      missionCode: string
+      title: string
+      objective: string
+      priority: string
+      status: string
+      plannedStartDate: datetime
+      plannedEndDate: datetime
+      actualStartDate: datetime
+      actualEndDate: datetime
+      createMission()
+      approveMission()
+      executeMission()
+      completeMission()
+
+    MissionAsset:
+      id: int
+      missionId: int
+      assetType: string
+      assetId: string
+      role: string
+      assignedDate: datetime
+      status: string
+      assignAsset()
+      updateAssetStatus()
+      reassignAsset()
+      releaseAsset()
+
+    Personnel:
+      id: int
+      missionId: int
+      serviceMemberId: int
+      role: string
+      clearanceLevel: string
+      assignedDate: datetime
+      isLeader: boolean
+      assignPersonnel()
+      updateRole()
+      reassignPersonnel()
+      removeFromMission()
+
+    RiskAssessment:
+      id: int
+      missionId: int
+      riskType: string
+      probability: float
+      impact: string
+      mitigation: string
+      assessedBy: int
+      assessedDate: datetime
+      identifyRisk()
+      evaluateRisk()
+      developMitigation()
+      monitorRisk()
+
+fleet_management:
+  name: "Fleet Management System"
+  description: "Vehicle and equipment fleet management"
+  model: |
+    Vehicle:
+      id: int
+      vin: string
+      vehicleType: string
+      make: string
+      model: string
+      year: int
+      mileage: int
+      fuelType: string
+      status: string
+      lastServiceDate: datetime
+      registerVehicle()
+      updateMileage()
+      scheduleService()
+      assignDriver()
+
+    ServiceHistory:
+      id: int
+      vehicleId: int
+      serviceType: string
+      serviceDate: datetime
+      mileage: int
+      cost: float
+      description: string
+      nextServiceDue: datetime
+      recordService()
+      updateService()
+      scheduleNextService()
+      generateReport()
+
+    Driver:
+      id: int
+      licenseNumber: string
+      name: string
+      licenseClass: string
+      expirationDate: datetime
+      trainingCompleted: boolean
+      assignedVehicles: list
+      assignVehicle(vehicleId: int)
+      renewLicense()
+      updateTraining()
+      releaseVehicle(vehicleId: int)
+
+    FuelTransaction:
+      id: int
+      vehicleId: int
+      driverId: int
+      fuelAmount: float
+      cost: float
+      transactionDate: datetime
+      location: string
+      recordFuel()
+      calculateEfficiency()
+      generateFuelReport()
+      trackConsumption()
+
+examples:
+  simple_ecommerce:
+    name: "Simple E-commerce"
+    description: "Basic e-commerce system for demonstrations"
+    model: |
+      User:
+        id: int
+        username: string
+        email: string
+        password: string
+        getId()
+        setUsername(name: string)
+        validateEmail()
+
+      Product:
+        id: int
+        name: string
+        price: float
+        description: string
+        getName()
+        setPrice(price: float)
+
+      Order:
+        id: int
+        userId: int
+        total: float
+        status: string
+        createOrder()
+        addItem(product: Product, quantity: int)
+        calculateTotal()
+
+  microservices_demo:
+    name: "Microservices Demo"
+    description: "Demonstrates microservices patterns"
+    model: |
+      UserService:
+        users: list
+        getUserById(id: int)
+        createUser(user: User)
+        updateUser(user: User)
+        deleteUser(id: int)
+
+      ProductService:
+        products: list
+        getProductById(id: int)
+        searchProducts(query: string)
+        updateInventory(id: int, quantity: int)
+
+      OrderService:
+        orders: list
+        createOrder(order: Order)
+        getOrdersByUser(userId: int)
+        updateOrderStatus(id: int, status: string)
+
+      PaymentService:
+        processPayment(order: Order)
+        refundPayment(orderId: int)
+        getPaymentHistory(userId: int)

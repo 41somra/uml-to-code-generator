@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: model-to-code-gateway
+  namespace: model-to-code
+  labels:
+    app: model-to-code-generator
+  annotations:
+    bigbang.dev/app: "model-to-code-generator"
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: model-to-code-tls
+    hosts:
+    - model-to-code.apps.dso.mil
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: model-to-code-vs
+  namespace: model-to-code
+  labels:
+    app: model-to-code-generator
+  annotations:
+    bigbang.dev/app: "model-to-code-generator"
+spec:
+  hosts:
+  - model-to-code.apps.dso.mil
+  gateways:
+  - model-to-code-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: model-to-code-service
+        port:
+          number: 80
+    headers:
+      request:
+        set:
+          X-Forwarded-Proto: https
+      response:
+        set:
+          Strict-Transport-Security: max-age=31536000; includeSubDomains

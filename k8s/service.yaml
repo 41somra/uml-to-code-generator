@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-to-code-service
+  namespace: model-to-code
+  labels:
+    app: model-to-code-generator
+  annotations:
+    # Platform One service annotations
+    bigbang.dev/app: "model-to-code-generator"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: model-to-code-generator
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: model-to-code-sa
+  namespace: model-to-code
+  labels:
+    app: model-to-code-generator
+  annotations:
+    # Platform One service account annotations
+    bigbang.dev/app: "model-to-code-generator"

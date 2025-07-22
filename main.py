@@ -17,6 +17,9 @@ from src.parsers.text_parser import TextModelParser
 from src.generators.python_generator import PythonCodeGenerator
 from src.generators.java_generator import JavaCodeGenerator  
 from src.generators.typescript_generator import TypeScriptCodeGenerator
+from src.generators.microservice_generator import MicroserviceGenerator
+from src.generators.openapi_generator import OpenAPIGenerator
+from src.generators.devsecops_generator import DevSecOpsGenerator
 from src.models.class_model import create_sample_model
 
 
@@ -46,9 +49,9 @@ Examples:
                        default='generated/',
                        help='Output directory (default: generated/)')
     parser.add_argument('-l', '--language',
-                       choices=['python', 'java', 'typescript'],
+                       choices=['python', 'java', 'typescript', 'microservices', 'openapi', 'devsecops'],
                        default='python',
-                       help='Target programming language (default: python)')
+                       help='Target programming language or architecture (default: python)')
     
     # Special modes
     parser.add_argument('--sample',
@@ -128,7 +131,10 @@ Examples:
         generators = {
             'python': PythonCodeGenerator(),
             'java': JavaCodeGenerator(),
-            'typescript': TypeScriptCodeGenerator()
+            'typescript': TypeScriptCodeGenerator(),
+            'microservices': MicroserviceGenerator(),
+            'openapi': OpenAPIGenerator(),
+            'devsecops': DevSecOpsGenerator()
         }
         
         generator = generators[args.language]
@@ -178,7 +184,10 @@ def generate_sample_code(args):
     generators = {
         'python': PythonCodeGenerator(),
         'java': JavaCodeGenerator(),
-        'typescript': TypeScriptCodeGenerator()
+        'typescript': TypeScriptCodeGenerator(),
+        'microservices': MicroserviceGenerator(),
+        'openapi': OpenAPIGenerator(),
+        'devsecops': DevSecOpsGenerator()
     }
     
     generator = generators[args.language]

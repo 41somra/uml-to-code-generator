@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-to-code-generator
+  namespace: model-to-code
+  labels:
+    app: model-to-code-generator
+    version: v1.0.0
+  annotations:
+    # Platform One annotations
+    bigbang.dev/app: "model-to-code-generator"
+    sidecar.istio.io/inject: "true"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: model-to-code-generator
+  template:
+    metadata:
+      labels:
+        app: model-to-code-generator
+        version: v1.0.0
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      serviceAccountName: model-to-code-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: model-to-code-generator
+        image: registry1.dso.mil/yourorg/model-to-code-generator:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "8080"
+        - name: ENVIRONMENT
+          value: "production"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: var-tmp
+          mountPath: /var/tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: var-tmp
+        emptyDir: {}
+      nodeSelector:
+        kubernetes.io/os: linux

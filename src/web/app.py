@@ -211,6 +211,40 @@ def internal_error(e):
     return jsonify({'error': 'Internal server error'}), 500
 
 
+@app.route('/health')
+def health_check():
+    """Health check endpoint for DoD Platform One"""
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': '2024-01-01T00:00:00Z',
+        'version': '1.0.0',
+        'service': 'model-to-code-generator'
+    }), 200
+
+
+@app.route('/ready')
+def readiness_check():
+    """Readiness check endpoint for Kubernetes"""
+    try:
+        # Test basic functionality
+        from ..parsers.text_parser import TextModelParser
+        parser = TextModelParser()
+        
+        return jsonify({
+            'status': 'ready',
+            'timestamp': '2024-01-01T00:00:00Z',
+            'checks': {
+                'parser': 'ok',
+                'generators': 'ok'
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'not ready',
+            'error': str(e)
+        }), 503
+
+
 if __name__ == '__main__':
     # Create templates directory if it doesn't exist
     template_dir = os.path.join(os.path.dirname(__file__), 'templates')

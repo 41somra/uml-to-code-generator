@@ -6,7 +6,7 @@ Convert UML class diagrams to production-ready source code in multiple programmi
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/41somra/uml-to-code-generator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A powerful Python application that converts UML class diagrams into source code in multiple programming languages. Transform your visual models into working code instantly!
+A powerful Python application that converts UML class diagrams into source code in multiple programming languages. **Now with specialized features for Air Force Kessel Run teams!** Transform your visual models into working code instantly!
 
 ## 🌟 Features
 
@@ -15,10 +15,13 @@ A powerful Python application that converts UML class diagrams into source code 
 - **PlantUML**: Industry-standard UML syntax
 - **YAML**: Structured configuration format
 
-### 🔧 Multiple Output Languages
+### 🔧 Multiple Output Options
 - **Python**: Complete classes with type hints, properties, and documentation
-- **Java**: Full Java classes with proper encapsulation and JavaDoc
+- **Java**: Full Java classes with proper encapsulation and JavaDoc  
 - **TypeScript**: Modern TypeScript with interfaces and type safety
+- **🚀 Microservices**: Complete Spring Boot microservice architecture
+- **📋 OpenAPI**: API specifications with client SDKs and documentation
+- **🔒 DevSecOps**: Security-hardened deployments with compliance
 
 ### 🎯 Rich Model Support
 - Class attributes with visibility modifiers
@@ -32,6 +35,48 @@ A powerful Python application that converts UML class diagrams into source code 
 - **Command Line**: Batch processing and automation
 - **Web Interface**: Interactive browser-based tool
 - **Programmatic API**: Integration into other tools
+
+## 🚀 **NEW: Kessel Run Features**
+
+**Built specifically for Air Force software development teams!**
+
+### **⚡ Microservices Architecture**
+```bash
+# Generate complete Spring Boot microservice ecosystem
+python main.py -i model.txt -l microservices -o kessel-run-services/
+```
+- Spring Boot applications with security
+- Docker & Kubernetes configurations
+- Database setup and migrations
+- API Gateway (Kong) configuration
+
+### **📋 API-First Development**
+```bash  
+# Generate OpenAPI specs and client SDKs
+python main.py -i model.txt -l openapi -o api-specs/
+```
+- OpenAPI 3.0 specifications
+- TypeScript, Java, Python clients
+- Postman collections
+- Interactive documentation
+
+### **🔒 DevSecOps Integration**
+```bash
+# Generate security-hardened deployments
+python main.py -i model.txt -l devsecops -o secure-deployment/
+```
+- FISMA & STIG compliance
+- Security scanning pipelines
+- Container hardening
+- DoD Platform One ready
+
+### **🎯 Mission Templates**
+Pre-built models for Air Force use cases:
+- `--template aircraft_maintenance`
+- `--template supply_chain`
+- `--template personnel_management`
+- `--template intelligence_analysis`
+- `--template mission_planning`
 
 ## 🌐 Try It Now
 

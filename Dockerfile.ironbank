@@ -1,0 +1,52 @@
+# Iron Bank compliant Dockerfile for DoD Platform One
+# Based on Iron Bank hardened Python image
+
+# Use Iron Bank hardened Python base image
+# Replace with actual Iron Bank registry URL
+FROM registry1.dso.mil/ironbank/opensource/python/python38:v3.8.18
+
+# Metadata required by Iron Bank
+LABEL name="model-to-code-generator" \
+      vendor="DoD" \
+      version="1.0.0" \
+      release="1" \
+      summary="UML to Code Generator for DoD Platform One" \
+      description="Convert UML class diagrams to source code in multiple languages"
+
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY src/ ./src/
+COPY examples/ ./examples/
+COPY main.py .
+COPY standalone_ui.html .
+COPY standalone_ui_logic.js .
+COPY index.html .
+
+# Create necessary directories
+RUN mkdir -p /app/output /app/generated && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose port (non-privileged)
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8080/health')" || exit 1
+
+# Default command
+CMD ["python", "main.py", "--web", "--port", "8080"]
