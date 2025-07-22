@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model-to-Code Generator - Live Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .format-tab.active { @apply bg-blue-500 text-white; }
+        .lang-tab.active { @apply bg-green-500 text-white; }
+        .hero-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Hero Section -->
+    <header class="hero-gradient text-white">
+        <div class="max-w-7xl mx-auto px-4 py-16">
+            <div class="text-center">
+                <h1 class="text-5xl font-bold mb-4">Model-to-Code Generator</h1>
+                <p class="text-xl mb-8 text-blue-100">Convert UML class diagrams to source code in multiple languages</p>
+                <div class="flex justify-center space-x-4 mb-8">
+                    <span class="bg-white/20 px-4 py-2 rounded-full text-sm">✨ No Server Required</span>
+                    <span class="bg-white/20 px-4 py-2 rounded-full text-sm">🚀 Instant Generation</span>
+                    <span class="bg-white/20 px-4 py-2 rounded-full text-sm">📱 Works Offline</span>
+                </div>
+                <a href="#generator" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                    Try It Now
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- GitHub Link -->
+    <div class="bg-gray-800 text-white py-3">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="https://github.com/yourusername/model-to-code" class="flex items-center space-x-2 hover:text-gray-300">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4 text-sm">
+                <span>🌟 Star this project</span>
+                <span>📖 Documentation</span>
+                <span>🐛 Report Issues</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Powerful Features</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Multiple Input Formats</h3>
+                    <p class="text-gray-600">Support for Simple Text, PlantUML, and YAML model formats</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Multi-Language Output</h3>
+                    <p class="text-gray-600">Generate Python, Java, and TypeScript code with proper syntax</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Instant Generation</h3>
+                    <p class="text-gray-600">Real-time code generation with syntax highlighting and validation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Generator -->
+    <section id="generator" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Try the Generator</h2>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <!-- Left Panel - Model Input -->
+                <div class="space-y-6">
+                    <!-- Input Format Selection -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-xl font-semibold mb-4">Model Input</h3>
+                        
+                        <!-- Format Tabs -->
+                        <div class="flex space-x-1 mb-4">
+                            <button class="format-tab active px-4 py-2 rounded-md text-sm font-medium bg-blue-500 text-white" data-format="simple">
+                                Simple Text
+                            </button>
+                            <button class="format-tab px-4 py-2 rounded-md text-sm font-medium bg-gray-200 hover:bg-gray-300" data-format="plantuml">
+                                PlantUML
+                            </button>
+                            <button class="format-tab px-4 py-2 rounded-md text-sm font-medium bg-gray-200 hover:bg-gray-300" data-format="yaml">
+                                YAML
+                            </button>
+                        </div>
+
+                        <!-- Model Input Area -->
+                        <div class="space-y-4">
+                            <textarea 
+                                id="modelText" 
+                                placeholder="Enter your UML model here..." 
+                                class="w-full h-64 p-4 border border-gray-300 rounded-lg font-mono text-sm resize-vertical focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >User:
+  id: int
+  username: string
+  email: string
+  getId()
+  setUsername(name: string)
+  validateEmail()
+
+Product:
+  id: int
+  name: string
+  price: float
+  getName()
+  setPrice(price: float)</textarea>
+                            
+                            <div class="flex justify-between items-center text-sm text-gray-600">
+                                <span>Format: <span id="currentFormat">Simple Text</span></span>
+                                <span id="charCount">0 characters</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generation Options -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4">Generation Options</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="targetLanguage" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Target Language
+                                </label>
+                                <div class="flex space-x-2">
+                                    <button class="lang-tab active px-4 py-2 rounded-md text-sm font-medium bg-green-500 text-white" data-lang="python">
+                                        Python
+                                    </button>
+                                    <button class="lang-tab px-4 py-2 rounded-md text-sm font-medium bg-gray-200 hover:bg-gray-300" data-lang="java">
+                                        Java
+                                    </button>
+                                    <button class="lang-tab px-4 py-2 rounded-md text-sm font-medium bg-gray-200 hover:bg-gray-300" data-lang="typescript">
+                                        TypeScript
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <input type="checkbox" id="includeComments" checked class="rounded">
+                                    <label for="includeComments" class="text-sm text-gray-700">
+                                        Include detailed comments
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center space-x-2">
+                                    <input type="checkbox" id="generateGetters" checked class="rounded">
+                                    <label for="generateGetters" class="text-sm text-gray-700">
+                                        Generate getters/setters
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button id="loadSample" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                                Load Sample
+                            </button>
+                            <button id="clearBtn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 text-sm">
+                                Clear
+                            </button>
+                            <button id="validateBtn" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-sm">
+                                Validate
+                            </button>
+                            <button id="generateBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                                Generate Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel - Generated Code -->
+                <div class="space-y-6">
+                    <!-- Generated Code Display -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold">Generated Code</h3>
+                            <div class="flex space-x-2">
+                                <button id="copyAllBtn" class="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded" disabled>
+                                    Copy All
+                                </button>
+                                <button id="downloadBtn" class="px-3 py-1 text-sm bg-blue-200 hover:bg-blue-300 rounded" disabled>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Placeholder State -->
+                        <div id="placeholderState" class="text-center p-8 text-gray-500">
+                            <div class="mb-4">
+                                <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <p>Click "Generate Code" to see the results</p>
+                        </div>
+
+                        <!-- File Tabs -->
+                        <div id="fileTabs" class="hidden space-y-4">
+                            <div class="border-b border-gray-200">
+                                <nav class="-mb-px flex space-x-8 overflow-x-auto" id="fileTabsNav">
+                                    <!-- Tabs will be inserted here -->
+                                </nav>
+                            </div>
+                            
+                            <div id="fileContent">
+                                <!-- File content will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generation Status -->
+                    <div id="statusCard" class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4">Status</h3>
+                        <div id="statusText" class="text-gray-600">Ready to generate code</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Model-to-Code Generator</h3>
+                    <p class="text-gray-300">Convert UML models to production-ready code in seconds.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Features</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>Multi-format input support</li>
+                        <li>Multiple programming languages</li>
+                        <li>Real-time validation</li>
+                        <li>Instant code generation</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Resources</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" class="hover:text-white">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white">Examples</a></li>
+                        <li><a href="#" class="hover:text-white">GitHub Repository</a></li>
+                        <li><a href="#" class="hover:text-white">Report Issues</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2024 Model-to-Code Generator. Made with ❤️ for developers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="standalone_ui_logic.js"></script>
+</body>
+</html>

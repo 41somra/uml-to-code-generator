@@ -1,0 +1,250 @@
+name: "E-commerce System"
+description: "Complete e-commerce domain model with users, products, orders, and payments"
+
+classes:
+  - name: User
+    package: entities
+    description: "User account management"
+    attributes:
+      - name: id
+        type: int
+        visibility: private
+      - name: username
+        type: string
+        visibility: private
+      - name: email
+        type: string
+        visibility: private
+      - name: password
+        type: string
+        visibility: private
+      - name: createdAt
+        type: datetime
+        visibility: private
+    methods:
+      - name: getId
+        return_type: int
+        visibility: public
+      - name: setUsername
+        visibility: public
+        parameters:
+          - name: username
+            type: string
+      - name: validateEmail
+        return_type: boolean
+        visibility: public
+      - name: changePassword
+        visibility: public
+        parameters:
+          - name: newPassword
+            type: string
+
+  - name: Product
+    package: entities
+    description: "Product catalog item"
+    attributes:
+      - name: id
+        type: int
+        visibility: private
+      - name: name
+        type: string
+        visibility: private
+      - name: price
+        type: float
+        visibility: private
+      - name: description
+        type: string
+        visibility: private
+      - name: category
+        type: string
+        visibility: private
+      - name: inStock
+        type: boolean
+        visibility: private
+    methods:
+      - name: getId
+        return_type: int
+        visibility: public
+      - name: getName
+        return_type: string
+        visibility: public
+      - name: setPrice
+        visibility: public
+        parameters:
+          - name: price
+            type: float
+      - name: updateStock
+        visibility: public
+        parameters:
+          - name: available
+            type: boolean
+
+  - name: Order
+    package: entities
+    description: "Customer order"
+    attributes:
+      - name: id
+        type: int
+        visibility: private
+      - name: userId
+        type: int
+        visibility: private
+      - name: orderDate
+        type: datetime
+        visibility: private
+      - name: status
+        type: string
+        visibility: private
+      - name: totalAmount
+        type: float
+        visibility: private
+      - name: items
+        type: list
+        visibility: private
+    methods:
+      - name: createOrder
+        visibility: public
+      - name: addItem
+        visibility: public
+        parameters:
+          - name: product
+            type: Product
+          - name: quantity
+            type: int
+      - name: calculateTotal
+        return_type: float
+        visibility: public
+      - name: updateStatus
+        visibility: public
+        parameters:
+          - name: status
+            type: string
+      - name: getOrderHistory
+        return_type: list
+        visibility: public
+        static: true
+        parameters:
+          - name: userId
+            type: int
+
+  - name: PaymentProcessor
+    interface: true
+    package: services
+    description: "Payment processing interface"
+    methods:
+      - name: processPayment
+        return_type: boolean
+        abstract: true
+        parameters:
+          - name: amount
+            type: float
+      - name: validateTransaction
+        return_type: boolean
+        abstract: true
+      - name: refund
+        return_type: boolean
+        abstract: true
+        parameters:
+          - name: amount
+            type: float
+
+  - name: CreditCardProcessor
+    package: services
+    description: "Credit card payment implementation"
+    attributes:
+      - name: cardNumber
+        type: string
+        visibility: private
+      - name: expiryDate
+        type: string
+        visibility: private
+      - name: cvv
+        type: string
+        visibility: private
+    methods:
+      - name: processPayment
+        return_type: boolean
+        visibility: public
+        parameters:
+          - name: amount
+            type: float
+      - name: validateTransaction
+        return_type: boolean
+        visibility: public
+      - name: refund
+        return_type: boolean
+        visibility: public
+        parameters:
+          - name: amount
+            type: float
+
+  - name: ShoppingCart
+    package: entities
+    description: "User shopping cart"
+    attributes:
+      - name: userId
+        type: int
+        visibility: private
+      - name: items
+        type: list
+        visibility: private
+      - name: totalAmount
+        type: float
+        visibility: private
+    methods:
+      - name: addItem
+        visibility: public
+        parameters:
+          - name: product
+            type: Product
+          - name: quantity
+            type: int
+      - name: removeItem
+        visibility: public
+        parameters:
+          - name: productId
+            type: int
+      - name: updateQuantity
+        visibility: public
+        parameters:
+          - name: productId
+            type: int
+          - name: quantity
+            type: int
+      - name: calculateTotal
+        return_type: float
+        visibility: public
+      - name: checkout
+        return_type: Order
+        visibility: public
+
+relationships:
+  - from: User
+    to: Order
+    type: association
+    multiplicity_from: one
+    multiplicity_to: many
+    label: "places"
+  
+  - from: User
+    to: ShoppingCart
+    type: composition
+    multiplicity_from: one
+    multiplicity_to: one
+    label: "has"
+  
+  - from: Order
+    to: Product
+    type: association
+    multiplicity_from: many
+    multiplicity_to: many
+    label: "contains"
+  
+  - from: CreditCardProcessor
+    to: PaymentProcessor
+    type: inheritance
+  
+  - from: Order
+    to: PaymentProcessor
+    type: association
+    label: "uses"

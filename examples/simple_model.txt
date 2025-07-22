@@ -1,0 +1,55 @@
+User:
+  id: int
+  username: string
+  email: string
+  password: string
+  createdAt: datetime
+  getId()
+  setUsername(name: string)
+  validateEmail()
+  changePassword(newPassword: string)
+
+Product:
+  id: int
+  name: string
+  price: float
+  description: string
+  category: string
+  inStock: boolean
+  getId()
+  getName()
+  setPrice(price: float)
+  updateStock(available: boolean)
+
+Order:
+  id: int
+  userId: int
+  orderDate: datetime
+  status: string
+  totalAmount: float
+  items: list
+  createOrder()
+  addItem(product: Product, quantity: int)
+  calculateTotal()
+  updateStatus(status: string)
+  getOrderHistory(userId: int)
+
+Payment:
+  id: int
+  orderId: int
+  amount: float
+  method: string
+  transactionId: string
+  processPayment()
+  validateTransaction()
+  refund(amount: float)
+
+ShoppingCart:
+  userId: int
+  items: list
+  totalAmount: float
+  addItem(product: Product, quantity: int)
+  removeItem(productId: int)
+  updateQuantity(productId: int, quantity: int)
+  calculateTotal()
+  checkout()

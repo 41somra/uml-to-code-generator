@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model-to-Code Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .loading { display: none; }
+        .loading.show { display: flex; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Model-to-Code Generator</h1>
+                    <p class="text-gray-600 mt-1">Convert UML class diagrams to source code</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="loadSample" class="btn-secondary">Load Sample</button>
+                    <button id="validateBtn" class="btn-outline">Validate</button>
+                    <button id="generateBtn" class="btn-primary">Generate Code</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <!-- Left Panel - Model Input -->
+            <div class="space-y-6">
+                <!-- Input Format Selection -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold mb-4">Model Input</h2>
+                    
+                    <!-- Format Tabs -->
+                    <div class="flex space-x-1 mb-4 bg-gray-100 rounded-lg p-1">
+                        <button class="format-tab active px-4 py-2 rounded-md text-sm font-medium" data-format="simple">
+                            Simple Text
+                        </button>
+                        <button class="format-tab px-4 py-2 rounded-md text-sm font-medium" data-format="plantuml">
+                            PlantUML
+                        </button>
+                        <button class="format-tab px-4 py-2 rounded-md text-sm font-medium" data-format="yaml">
+                            YAML
+                        </button>
+                    </div>
+
+                    <!-- Model Input Area -->
+                    <div class="space-y-4">
+                        <textarea 
+                            id="modelText" 
+                            placeholder="Enter your UML model here..." 
+                            class="w-full h-64 p-4 border border-gray-300 rounded-lg font-mono text-sm resize-vertical focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        ></textarea>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-600">
+                            <span>Format: <span id="currentFormat">Simple Text</span></span>
+                            <span id="charCount">0 characters</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generation Options -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-4">Generation Options</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="targetLanguage" class="block text-sm font-medium text-gray-700 mb-2">
+                                Target Language
+                            </label>
+                            <select id="targetLanguage" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="python">Python</option>
+                                <option value="java">Java</option>
+                                <option value="typescript">TypeScript</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="includeComments" checked class="rounded">
+                            <label for="includeComments" class="text-sm text-gray-700">
+                                Include detailed comments
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="generateTests" class="rounded">
+                            <label for="generateTests" class="text-sm text-gray-700">
+                                Generate test files
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Validation -->
+                <div id="validationResult" class="hidden bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-4">Validation Result</h3>
+                    <div id="validationContent"></div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Generated Code -->
+            <div class="space-y-6">
+                <!-- Generated Code Display -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold">Generated Code</h2>
+                        <div class="flex space-x-2">
+                            <button id="downloadBtn" class="btn-outline" disabled>
+                                Download ZIP
+                            </button>
+                            <button id="copyBtn" class="btn-outline" disabled>
+                                Copy All
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="loading items-center justify-center p-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
+                        <span>Generating code...</span>
+                    </div>
+
+                    <!-- Placeholder State -->
+                    <div id="placeholderState" class="text-center p-8 text-gray-500">
+                        <div class="mb-4">
+                            <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <p>Enter a UML model and click "Generate Code" to see the results</p>
+                    </div>
+
+                    <!-- File Tabs -->
+                    <div id="fileTabs" class="hidden space-y-4">
+                        <div class="border-b border-gray-200">
+                            <nav class="-mb-px flex space-x-8 overflow-x-auto scrollbar-hide">
+                                <!-- Tabs will be inserted here -->
+                            </nav>
+                        </div>
+                        
+                        <div id="fileContent">
+                            <!-- File content will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generation Info -->
+                <div id="generationInfo" class="hidden bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-4">Generation Summary</h3>
+                    <div id="generationStats" class="grid grid-cols-3 gap-4 text-center">
+                        <!-- Stats will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="mt-12 bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">How to Use</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <h3 class="font-semibold mb-2">Simple Text Format</h3>
+                    <pre class="text-xs bg-gray-50 p-3 rounded"><code>User:
+  id: int
+  username: string
+  email: string
+  getId()
+  setUsername(name)</code></pre>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">PlantUML Format</h3>
+                    <pre class="text-xs bg-gray-50 p-3 rounded"><code>@startuml
+class User {
+  - id: int
+  + getId(): int
+}
+@enduml</code></pre>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">YAML Format</h3>
+                    <pre class="text-xs bg-gray-50 p-3 rounded"><code>classes:
+  - name: User
+    attributes:
+      - name: id
+        type: int</code></pre>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/app.js"></script>
+
+    <style>
+        .btn {
+            @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+        }
+        
+        .btn-primary {
+            @apply btn bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+        }
+        
+        .btn-secondary {
+            @apply btn bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
+        }
+        
+        .btn-outline {
+            @apply btn border-2 border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500;
+        }
+        
+        .btn:disabled {
+            @apply opacity-50 cursor-not-allowed;
+        }
+
+        .format-tab {
+            @apply text-gray-600 hover:text-gray-900 hover:bg-white transition-colors;
+        }
+        
+        .format-tab.active {
+            @apply bg-white text-gray-900 shadow-sm;
+        }
+
+        .file-tab {
+            @apply px-4 py-2 text-sm font-medium border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 whitespace-nowrap;
+        }
+        
+        .file-tab.active {
+            @apply text-blue-600 border-blue-500;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        pre code {
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .hljs {
+            background: #f8f9fa !important;
+            padding: 1rem !important;
+            border-radius: 0.5rem !important;
+        }
+    </style>
+</body>
+</html>

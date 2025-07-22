@@ -1,0 +1,81 @@
+{
+  "name": "model-to-code",
+  "displayName": "Model-to-Code Generator",
+  "description": "Convert UML models to source code directly in VS Code",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onLanguage:plantuml",
+    "onLanguage:yaml",
+    "onCommand:model-to-code.generate"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "model-to-code.generate",
+        "title": "Generate Code from Model",
+        "category": "Model-to-Code"
+      },
+      {
+        "command": "model-to-code.generatePython",
+        "title": "Generate Python Code",
+        "category": "Model-to-Code"
+      },
+      {
+        "command": "model-to-code.generateJava",
+        "title": "Generate Java Code", 
+        "category": "Model-to-Code"
+      },
+      {
+        "command": "model-to-code.generateTypeScript",
+        "title": "Generate TypeScript Code",
+        "category": "Model-to-Code"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "model-to-code.generate",
+          "when": "resourceExtname =~ /\\.(txt|puml|plantuml|yaml|yml)$/",
+          "group": "model-to-code"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "model-to-code.generate", 
+          "when": "resourceExtname =~ /\\.(txt|puml|plantuml|yaml|yml)$/",
+          "group": "model-to-code"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "model-text",
+        "aliases": ["Model Text", "model-text"],
+        "extensions": [".model", ".mtc"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "model-text",
+        "scopeName": "source.model-text",
+        "path": "./syntaxes/model-text.tmGrammar.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0",
+    "@types/node": "16.x",
+    "typescript": "^4.4.4"
+  }
+}

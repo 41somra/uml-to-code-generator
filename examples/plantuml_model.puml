@@ -1,0 +1,117 @@
+@startuml E-commerce System
+
+' User management
+class User {
+    - id: int
+    - username: string
+    - email: string
+    - password: string
+    - createdAt: datetime
+    + getId(): int
+    + setUsername(name: string): void
+    + validateEmail(): boolean
+    + changePassword(newPassword: string): void
+}
+
+' Product catalog
+class Product {
+    - id: int
+    - name: string
+    - price: float
+    - description: string
+    - category: string
+    - inStock: boolean
+    + getId(): int
+    + getName(): string
+    + setPrice(price: float): void
+    + updateStock(available: boolean): void
+}
+
+' Order management
+class Order {
+    - id: int
+    - userId: int
+    - orderDate: datetime
+    - status: string
+    - totalAmount: float
+    - items: List
+    + createOrder(): void
+    + addItem(product: Product, quantity: int): void
+    + calculateTotal(): float
+    + updateStatus(status: string): void
+    + getOrderHistory(userId: int): List
+}
+
+' Payment processing
+interface PaymentProcessor {
+    + processPayment(amount: float): boolean
+    + validateTransaction(): boolean
+    + refund(amount: float): boolean
+}
+
+class CreditCardProcessor {
+    - cardNumber: string
+    - expiryDate: string
+    - cvv: string
+    + processPayment(amount: float): boolean
+    + validateTransaction(): boolean
+    + refund(amount: float): boolean
+}
+
+class PayPalProcessor {
+    - paypalEmail: string
+    - accessToken: string
+    + processPayment(amount: float): boolean
+    + validateTransaction(): boolean
+    + refund(amount: float): boolean
+}
+
+' Shopping cart
+class ShoppingCart {
+    - userId: int
+    - items: List
+    - totalAmount: float
+    + addItem(product: Product, quantity: int): void
+    + removeItem(productId: int): void
+    + updateQuantity(productId: int, quantity: int): void
+    + calculateTotal(): float
+    + checkout(): Order
+}
+
+' Address information
+class Address {
+    - id: int
+    - userId: int
+    - street: string
+    - city: string
+    - state: string
+    - zipCode: string
+    - country: string
+    + getFullAddress(): string
+}
+
+' Order item details
+class OrderItem {
+    - orderId: int
+    - productId: int
+    - quantity: int
+    - unitPrice: float
+    - totalPrice: float
+    + calculateItemTotal(): float
+}
+
+' Relationships
+User ||--o{ Order : "places"
+User ||--|| ShoppingCart : "has"
+User ||--o{ Address : "has"
+
+Order ||--o{ OrderItem : "contains"
+Product ||--o{ OrderItem : "referenced by"
+
+ShoppingCart o--o{ Product : "contains"
+
+Order --> PaymentProcessor : "uses"
+CreditCardProcessor ..|> PaymentProcessor
+PayPalProcessor ..|> PaymentProcessor
+
+@enduml
