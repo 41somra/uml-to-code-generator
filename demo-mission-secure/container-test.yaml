@@ -1,0 +1,43 @@
+schemaVersion: 2.0.0
+
+metadataTest:
+  labels:
+    - key: "name"
+      value: "kessel-run-service"
+    - key: "vendor"
+      value: "U.S. Air Force"
+
+commandTests:
+  - name: "java version check"
+    command: "java"
+    args: ["-version"]
+    exitCode: 0
+
+  - name: "non-root user check"
+    command: "whoami"
+    expectedOutput: ["kesselrun"]
+    exitCode: 0
+
+  - name: "app jar exists"
+    command: "ls"
+    args: ["/app/app.jar"]
+    exitCode: 0
+
+fileExistenceTests:
+  - name: "app jar"
+    path: "/app/app.jar"
+    shouldExist: true
+
+  - name: "no root files"
+    path: "/root"
+    shouldExist: false
+
+fileContentTests:
+  - name: "app jar permissions"
+    path: "/app/app.jar"
+    expectedContents: []
+    # File should not be writable by group or others
+
+licenseTests:
+  - debian: false
+    files: []

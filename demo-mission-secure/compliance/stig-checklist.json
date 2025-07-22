@@ -1,0 +1,35 @@
+{
+  "stigId": "APSC-DV-002560",
+  "title": "Application Security and Development STIG",
+  "version": "V4R11",
+  "releaseDate": "2024-01-01",
+  "checks": [
+    {
+      "vulnId": "V-222397",
+      "rule": "APSC-DV-002560",
+      "severity": "high",
+      "title": "The application must protect the confidentiality and integrity of transmitted information.",
+      "status": "NotAFinding",
+      "comments": "TLS 1.3 implemented for all communications",
+      "evidence": "SecurityConfig.java - HTTPS enforcement"
+    },
+    {
+      "vulnId": "V-222398", 
+      "rule": "APSC-DV-002570",
+      "severity": "medium",
+      "title": "The application must implement cryptographic mechanisms to prevent unauthorized modification of information at rest.",
+      "status": "NotAFinding",
+      "comments": "Database encryption enabled",
+      "evidence": "application.yml - database encryption settings"
+    },
+    {
+      "vulnId": "V-222399",
+      "rule": "APSC-DV-002580",
+      "severity": "high", 
+      "title": "The application must separate user functionality from management functionality.",
+      "status": "NotAFinding",
+      "comments": "Role-based access control implemented",
+      "evidence": "SecurityConfig.java - role separation"
+    }
+  ]
+}

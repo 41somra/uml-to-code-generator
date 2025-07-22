@@ -218,7 +218,7 @@ def generate_sample_code(args):
 
 def start_web_interface():
     """Start the web interface"""
-    print("Starting Model-to-Code Generator web interface...")
+    print("Starting Air Force Model-to-Code Generator web interface...")
     
     try:
         from src.web.app import app

@@ -1,0 +1,52 @@
+groups:
+  - name: kessel-run-security
+    rules:
+      - alert: HighAuthenticationFailureRate
+        expr: rate(authentication_failures_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "High authentication failure rate detected"
+          description: "Authentication failures are occurring at {{ $value }} per second"
+      
+      - alert: UnauthorizedAccessAttempt
+        expr: rate(unauthorized_access_attempts_total[1m]) > 0
+        for: 0s
+        labels:
+          severity: critical
+          component: security
+        annotations:
+          summary: "Unauthorized access attempt detected"
+          description: "Unauthorized access attempts detected in the last minute"
+      
+      - alert: SecurityScanDetected
+        expr: rate(security_scan_requests_total[5m]) > 5
+        for: 1m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "Potential security scan detected"
+          description: "High rate of suspicious requests detected"
+
+  - name: kessel-run-application
+    rules:
+      - alert: ApplicationDown
+        expr: up{job="kessel-run-service"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kessel Run service is down"
+          description: "The Kessel Run service has been down for more than 1 minute"
+      
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }} errors per second"

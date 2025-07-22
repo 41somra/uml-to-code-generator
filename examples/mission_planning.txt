@@ -1,0 +1,93 @@
+Mission:
+  id: int
+  missionCode: string
+  title: string
+  objective: string
+  classification: string
+  priority: string
+  status: string
+  plannedStartDate: datetime
+  plannedEndDate: datetime
+  actualStartDate: datetime
+  actualEndDate: datetime
+  commanderId: int
+  createMission()
+  approveMission()
+  executeMission()
+  completeMission()
+  updateStatus(status: string)
+
+MissionAsset:
+  id: int
+  missionId: int
+  assetType: string
+  assetId: string
+  role: string
+  assignedDate: datetime
+  status: string
+  coordinates: string
+  assignAsset()
+  updateAssetStatus()
+  reassignAsset()
+  releaseAsset()
+  trackLocation()
+
+MissionPersonnel:
+  id: int
+  missionId: int
+  serviceMemberId: int
+  role: string
+  clearanceLevel: string
+  assignedDate: datetime
+  isLeader: boolean
+  specialSkills: list
+  assignPersonnel()
+  updateRole()
+  reassignPersonnel()
+  removeFromMission()
+  validateClearance()
+
+RiskAssessment:
+  id: int
+  missionId: int
+  riskType: string
+  probability: float
+  impact: string
+  mitigation: string
+  assessedBy: int
+  assessedDate: datetime
+  status: string
+  identifyRisk()
+  evaluateRisk()
+  developMitigation()
+  monitorRisk()
+  escalateRisk()
+
+Intelligence:
+  id: int
+  missionId: int
+  intelType: string
+  classification: string
+  source: string
+  reliability: string
+  content: string
+  collectedDate: datetime
+  isVerified: boolean
+  addIntel()
+  verifyIntel()
+  classifyIntel()
+  shareIntel()
+  updateReliability()
+
+MissionStatus:
+  id: int
+  missionId: int
+  statusUpdate: string
+  timestamp: datetime
+  reportedBy: int
+  location: string
+  isUrgent: boolean
+  createStatusUpdate()
+  broadcastUpdate()
+  acknowledgeUpdate()
+  escalateUpdate()

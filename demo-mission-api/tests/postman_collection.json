@@ -1,0 +1,275 @@
+{
+  "info": {
+    "name": "Simple Text Diagram API Tests",
+    "description": "Kessel Run API test collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "{{base_url}}"
+    },
+    {
+      "key": "jwt_token",
+      "value": "{{jwt_token}}"
+    }
+  ],
+  "item": [
+    {
+      "name": "List Missions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "missions"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Mission",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "missions"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List MissionAssets",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "missionassets"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create MissionAsset",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "missionassets"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List MissionPersonnels",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "missionpersonnels"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create MissionPersonnel",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "missionpersonnels"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List RiskAssessments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "riskassessments"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create RiskAssessment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "riskassessments"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Intelligences",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "intelligences"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Intelligence",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "intelligences"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List MissionStatuss",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "missionstatuss"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create MissionStatus",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{{{base_url}}}}/{resource_name}s",
+          "host": [
+            "{{{{base_url}}}}"
+          ],
+          "path": [
+            "missionstatuss"
+          ]
+        }
+      }
+    }
+  ]
+}

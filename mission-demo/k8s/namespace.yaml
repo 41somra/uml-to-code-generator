@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kessel-run
+  labels:
+    name: kessel-run
+    istio-injection: enabled
+  annotations:
+    kessel-run.af.mil/environment: "production"

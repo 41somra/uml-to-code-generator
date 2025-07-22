@@ -1,0 +1,42 @@
+_format_version: "2.1"
+_transform: true
+
+services:
+- name: common-service
+  url: http://common-service.kessel-run.svc.cluster.local
+  plugins:
+  - name: rate-limiting
+    config:
+      minute: 100
+      hour: 1000
+  - name: cors
+    config:
+      origins:
+      - "*"
+      methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+      headers:
+      - Accept
+      - Authorization
+      - Content-Type
+      - X-Requested-With
+  - name: jwt
+    config:
+      key_claim_name: iss
+      secret_is_base64: false
+
+routes:
+- name: common-service-api
+  service: common-service
+  paths:
+  - /api/v1/common
+  methods:
+  - GET
+  - POST
+  - PUT
+  - DELETE
+  strip_path: false

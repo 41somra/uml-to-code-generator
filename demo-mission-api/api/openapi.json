@@ -1,0 +1,2223 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Simple Text Diagram API",
+    "description": "Air Force Kessel Run Mission System API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Kessel Run Team",
+      "email": "kessel.run@us.af.mil",
+      "url": "https://kesselrun.af.mil"
+    },
+    "license": {
+      "name": "U.S. Government Work",
+      "url": "https://www.usa.gov/government-works"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.kesselrun.af.mil/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://api-staging.kesselrun.af.mil/v1",
+      "description": "Staging server"
+    },
+    {
+      "url": "http://localhost:8080/v1",
+      "description": "Development server"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    },
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/missions": {
+      "get": {
+        "tags": [
+          "Mission"
+        ],
+        "summary": "List all Missions",
+        "description": "Retrieve a paginated list of Mission entities",
+        "operationId": "listMissions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/sizeParam"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort criteria",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "createdAt,desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionPageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Mission"
+        ],
+        "summary": "Create a new Mission",
+        "description": "Create a new Mission entity",
+        "operationId": "createMission",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mission created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/missions/{id}": {
+      "get": {
+        "tags": [
+          "Mission"
+        ],
+        "summary": "Get Mission by ID",
+        "description": "Retrieve a specific Mission by its ID",
+        "operationId": "getMissionById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Mission ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Mission"
+        ],
+        "summary": "Update Mission",
+        "description": "Update an existing Mission",
+        "operationId": "updateMission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Mission ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mission updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Mission"
+        ],
+        "summary": "Delete Mission",
+        "description": "Delete a Mission by ID",
+        "operationId": "deleteMission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Mission ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Mission deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/missionassets": {
+      "get": {
+        "tags": [
+          "MissionAsset"
+        ],
+        "summary": "List all MissionAssets",
+        "description": "Retrieve a paginated list of MissionAsset entities",
+        "operationId": "listMissionAssets",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/sizeParam"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort criteria",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "createdAt,desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionAssetPageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "MissionAsset"
+        ],
+        "summary": "Create a new MissionAsset",
+        "description": "Create a new MissionAsset entity",
+        "operationId": "createMissionAsset",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionAssetCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "MissionAsset created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionAssetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/missionassets/{id}": {
+      "get": {
+        "tags": [
+          "MissionAsset"
+        ],
+        "summary": "Get MissionAsset by ID",
+        "description": "Retrieve a specific MissionAsset by its ID",
+        "operationId": "getMissionAssetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionAsset ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionAssetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "MissionAsset"
+        ],
+        "summary": "Update MissionAsset",
+        "description": "Update an existing MissionAsset",
+        "operationId": "updateMissionAsset",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionAsset ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionAssetUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "MissionAsset updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionAssetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "MissionAsset"
+        ],
+        "summary": "Delete MissionAsset",
+        "description": "Delete a MissionAsset by ID",
+        "operationId": "deleteMissionAsset",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionAsset ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "MissionAsset deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/missionpersonnels": {
+      "get": {
+        "tags": [
+          "MissionPersonnel"
+        ],
+        "summary": "List all MissionPersonnels",
+        "description": "Retrieve a paginated list of MissionPersonnel entities",
+        "operationId": "listMissionPersonnels",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/sizeParam"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort criteria",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "createdAt,desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionPersonnelPageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "MissionPersonnel"
+        ],
+        "summary": "Create a new MissionPersonnel",
+        "description": "Create a new MissionPersonnel entity",
+        "operationId": "createMissionPersonnel",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionPersonnelCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "MissionPersonnel created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionPersonnelResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/missionpersonnels/{id}": {
+      "get": {
+        "tags": [
+          "MissionPersonnel"
+        ],
+        "summary": "Get MissionPersonnel by ID",
+        "description": "Retrieve a specific MissionPersonnel by its ID",
+        "operationId": "getMissionPersonnelById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionPersonnel ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionPersonnelResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "MissionPersonnel"
+        ],
+        "summary": "Update MissionPersonnel",
+        "description": "Update an existing MissionPersonnel",
+        "operationId": "updateMissionPersonnel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionPersonnel ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionPersonnelUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "MissionPersonnel updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionPersonnelResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "MissionPersonnel"
+        ],
+        "summary": "Delete MissionPersonnel",
+        "description": "Delete a MissionPersonnel by ID",
+        "operationId": "deleteMissionPersonnel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionPersonnel ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "MissionPersonnel deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/riskassessments": {
+      "get": {
+        "tags": [
+          "RiskAssessment"
+        ],
+        "summary": "List all RiskAssessments",
+        "description": "Retrieve a paginated list of RiskAssessment entities",
+        "operationId": "listRiskAssessments",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/sizeParam"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort criteria",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "createdAt,desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskAssessmentPageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "RiskAssessment"
+        ],
+        "summary": "Create a new RiskAssessment",
+        "description": "Create a new RiskAssessment entity",
+        "operationId": "createRiskAssessment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RiskAssessmentCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "RiskAssessment created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskAssessmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/riskassessments/{id}": {
+      "get": {
+        "tags": [
+          "RiskAssessment"
+        ],
+        "summary": "Get RiskAssessment by ID",
+        "description": "Retrieve a specific RiskAssessment by its ID",
+        "operationId": "getRiskAssessmentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "RiskAssessment ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskAssessmentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "RiskAssessment"
+        ],
+        "summary": "Update RiskAssessment",
+        "description": "Update an existing RiskAssessment",
+        "operationId": "updateRiskAssessment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "RiskAssessment ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RiskAssessmentUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "RiskAssessment updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskAssessmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "RiskAssessment"
+        ],
+        "summary": "Delete RiskAssessment",
+        "description": "Delete a RiskAssessment by ID",
+        "operationId": "deleteRiskAssessment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "RiskAssessment ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "RiskAssessment deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/intelligences": {
+      "get": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "List all Intelligences",
+        "description": "Retrieve a paginated list of Intelligence entities",
+        "operationId": "listIntelligences",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/sizeParam"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort criteria",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "createdAt,desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntelligencePageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Create a new Intelligence",
+        "description": "Create a new Intelligence entity",
+        "operationId": "createIntelligence",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntelligenceCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Intelligence created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntelligenceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/intelligences/{id}": {
+      "get": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Get Intelligence by ID",
+        "description": "Retrieve a specific Intelligence by its ID",
+        "operationId": "getIntelligenceById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Intelligence ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntelligenceResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Update Intelligence",
+        "description": "Update an existing Intelligence",
+        "operationId": "updateIntelligence",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Intelligence ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntelligenceUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Intelligence updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntelligenceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Intelligence"
+        ],
+        "summary": "Delete Intelligence",
+        "description": "Delete a Intelligence by ID",
+        "operationId": "deleteIntelligence",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Intelligence ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Intelligence deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/missionstatuss": {
+      "get": {
+        "tags": [
+          "MissionStatus"
+        ],
+        "summary": "List all MissionStatuss",
+        "description": "Retrieve a paginated list of MissionStatus entities",
+        "operationId": "listMissionStatuss",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/sizeParam"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort criteria",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "createdAt,desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionStatusPageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "MissionStatus"
+        ],
+        "summary": "Create a new MissionStatus",
+        "description": "Create a new MissionStatus entity",
+        "operationId": "createMissionStatus",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionStatusCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "MissionStatus created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/missionstatuss/{id}": {
+      "get": {
+        "tags": [
+          "MissionStatus"
+        ],
+        "summary": "Get MissionStatus by ID",
+        "description": "Retrieve a specific MissionStatus by its ID",
+        "operationId": "getMissionStatusById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionStatus ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionStatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "MissionStatus"
+        ],
+        "summary": "Update MissionStatus",
+        "description": "Update an existing MissionStatus",
+        "operationId": "updateMissionStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionStatus ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionStatusUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "MissionStatus updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "MissionStatus"
+        ],
+        "summary": "Delete MissionStatus",
+        "description": "Delete a MissionStatus by ID",
+        "operationId": "deleteMissionStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "MissionStatus ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "MissionStatus deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Mission": {
+        "type": "object",
+        "description": "Mission entity for Air Force mission systems",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unique identifier for Mission",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "MissionCreateRequest": {
+        "type": "object",
+        "description": "Request payload for creating Mission",
+        "properties": {},
+        "required": []
+      },
+      "MissionUpdateRequest": {
+        "type": "object",
+        "description": "Request payload for updating Mission",
+        "properties": {},
+        "required": []
+      },
+      "MissionResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Mission"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "type": "object",
+                "description": "HATEOAS links",
+                "properties": {
+                  "self": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "edit": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "delete": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MissionPageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MissionResponse"
+            }
+          },
+          "pageable": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer"
+              },
+              "size": {
+                "type": "integer"
+              },
+              "sort": {
+                "type": "string"
+              }
+            }
+          },
+          "totalElements": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MissionAsset": {
+        "type": "object",
+        "description": "MissionAsset entity for Air Force mission systems",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unique identifier for MissionAsset",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "MissionAssetCreateRequest": {
+        "type": "object",
+        "description": "Request payload for creating MissionAsset",
+        "properties": {},
+        "required": []
+      },
+      "MissionAssetUpdateRequest": {
+        "type": "object",
+        "description": "Request payload for updating MissionAsset",
+        "properties": {},
+        "required": []
+      },
+      "MissionAssetResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MissionAsset"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "type": "object",
+                "description": "HATEOAS links",
+                "properties": {
+                  "self": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "edit": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "delete": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MissionAssetPageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MissionAssetResponse"
+            }
+          },
+          "pageable": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer"
+              },
+              "size": {
+                "type": "integer"
+              },
+              "sort": {
+                "type": "string"
+              }
+            }
+          },
+          "totalElements": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MissionPersonnel": {
+        "type": "object",
+        "description": "MissionPersonnel entity for Air Force mission systems",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unique identifier for MissionPersonnel",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "MissionPersonnelCreateRequest": {
+        "type": "object",
+        "description": "Request payload for creating MissionPersonnel",
+        "properties": {},
+        "required": []
+      },
+      "MissionPersonnelUpdateRequest": {
+        "type": "object",
+        "description": "Request payload for updating MissionPersonnel",
+        "properties": {},
+        "required": []
+      },
+      "MissionPersonnelResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MissionPersonnel"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "type": "object",
+                "description": "HATEOAS links",
+                "properties": {
+                  "self": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "edit": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "delete": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MissionPersonnelPageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MissionPersonnelResponse"
+            }
+          },
+          "pageable": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer"
+              },
+              "size": {
+                "type": "integer"
+              },
+              "sort": {
+                "type": "string"
+              }
+            }
+          },
+          "totalElements": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RiskAssessment": {
+        "type": "object",
+        "description": "RiskAssessment entity for Air Force mission systems",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unique identifier for RiskAssessment",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "RiskAssessmentCreateRequest": {
+        "type": "object",
+        "description": "Request payload for creating RiskAssessment",
+        "properties": {},
+        "required": []
+      },
+      "RiskAssessmentUpdateRequest": {
+        "type": "object",
+        "description": "Request payload for updating RiskAssessment",
+        "properties": {},
+        "required": []
+      },
+      "RiskAssessmentResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RiskAssessment"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "type": "object",
+                "description": "HATEOAS links",
+                "properties": {
+                  "self": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "edit": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "delete": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "RiskAssessmentPageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RiskAssessmentResponse"
+            }
+          },
+          "pageable": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer"
+              },
+              "size": {
+                "type": "integer"
+              },
+              "sort": {
+                "type": "string"
+              }
+            }
+          },
+          "totalElements": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Intelligence": {
+        "type": "object",
+        "description": "Intelligence entity for Air Force mission systems",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unique identifier for Intelligence",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "IntelligenceCreateRequest": {
+        "type": "object",
+        "description": "Request payload for creating Intelligence",
+        "properties": {},
+        "required": []
+      },
+      "IntelligenceUpdateRequest": {
+        "type": "object",
+        "description": "Request payload for updating Intelligence",
+        "properties": {},
+        "required": []
+      },
+      "IntelligenceResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Intelligence"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "type": "object",
+                "description": "HATEOAS links",
+                "properties": {
+                  "self": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "edit": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "delete": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "IntelligencePageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IntelligenceResponse"
+            }
+          },
+          "pageable": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer"
+              },
+              "size": {
+                "type": "integer"
+              },
+              "sort": {
+                "type": "string"
+              }
+            }
+          },
+          "totalElements": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MissionStatus": {
+        "type": "object",
+        "description": "MissionStatus entity for Air Force mission systems",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unique identifier for MissionStatus",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "readOnly": true
+          }
+        },
+        "required": []
+      },
+      "MissionStatusCreateRequest": {
+        "type": "object",
+        "description": "Request payload for creating MissionStatus",
+        "properties": {},
+        "required": []
+      },
+      "MissionStatusUpdateRequest": {
+        "type": "object",
+        "description": "Request payload for updating MissionStatus",
+        "properties": {},
+        "required": []
+      },
+      "MissionStatusResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MissionStatus"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "type": "object",
+                "description": "HATEOAS links",
+                "properties": {
+                  "self": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "edit": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "delete": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MissionStatusPageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MissionStatusResponse"
+            }
+          },
+          "pageable": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer"
+              },
+              "size": {
+                "type": "integer"
+              },
+              "sort": {
+                "type": "string"
+              }
+            }
+          },
+          "totalElements": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    },
+    "parameters": {
+      "pageParam": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "sizeParam": {
+        "name": "size",
+        "in": "query",
+        "description": "Number of items per page",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        }
+      }
+    },
+    "responses": {
+      "ErrorResponse": {
+        "description": "Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

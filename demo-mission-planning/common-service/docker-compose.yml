@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  common-service:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/common_service
+    depends_on:
+      - postgres
+      - consul
+    networks:
+      - kessel-run-network
+  
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=common_service
+      - POSTGRES_USER=kessel_user
+      - POSTGRES_PASSWORD=kessel_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - kessel-run-network
+  
+  consul:
+    image: consul:1.12
+    command: agent -server -bootstrap -ui -node=server-1 -bind=0.0.0.0 -client=0.0.0.0
+    ports:
+      - "8500:8500"
+    networks:
+      - kessel-run-network
+
+volumes:
+  postgres_data:
+
+networks:
+  kessel-run-network:
+    driver: bridge

@@ -1,0 +1,72 @@
+# FISMA Security Controls Implementation
+# Air Force Kessel Run Compliance Configuration
+
+access_controls:
+  AC-2: # Account Management
+    implemented: true
+    description: "Account management through Spring Security and JWT"
+    evidence: "SecurityConfig.java, JwtAuthenticationFilter.java"
+  
+  AC-3: # Access Enforcement
+    implemented: true
+    description: "Role-based access control with Spring Security"
+    evidence: "@PreAuthorize annotations, SecurityConfig.java"
+  
+  AC-6: # Least Privilege
+    implemented: true
+    description: "Minimal required permissions per role"
+    evidence: "Role definitions in SecurityConfig.java"
+
+audit_controls:
+  AU-2: # Audit Events
+    implemented: true
+    description: "Security event logging via Spring Boot Actuator"
+    evidence: "application.yml logging configuration"
+  
+  AU-3: # Audit Record Content
+    implemented: true
+    description: "Structured logging with user context"
+    evidence: "AuditEventRepository configuration"
+  
+  AU-12: # Audit Generation
+    implemented: true
+    description: "Automated audit log generation"
+    evidence: "Logback configuration, Spring Security events"
+
+configuration_management:
+  CM-6: # Configuration Settings
+    implemented: true
+    description: "Secure configuration management"
+    evidence: "application.yml, security properties"
+  
+  CM-7: # Least Functionality
+    implemented: true
+    description: "Minimal service configuration"
+    evidence: "Disabled unused Spring modules"
+
+identification_authentication:
+  IA-2: # Identification and Authentication
+    implemented: true
+    description: "JWT-based authentication"
+    evidence: "JwtAuthenticationFilter.java"
+  
+  IA-5: # Authenticator Management
+    implemented: true
+    description: "Secure password policies"
+    evidence: "BCryptPasswordEncoder configuration"
+
+system_communications:
+  SC-7: # Boundary Protection
+    implemented: true
+    description: "Network security controls"
+    evidence: "NetworkPolicy configurations"
+  
+  SC-8: # Transmission Confidentiality
+    implemented: true
+    description: "TLS encryption for all communications"
+    evidence: "HTTPS configuration, TLS certificates"
+  
+  SC-23: # Session Authenticity
+    implemented: true
+    description: "JWT token-based session management"
+    evidence: "Stateless session configuration"

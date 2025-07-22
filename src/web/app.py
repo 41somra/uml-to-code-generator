@@ -19,12 +19,26 @@ from ..models.class_model import create_sample_model
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-# Initialize generators
+# Initialize generators (including Kessel Run generators if available)
 generators = {
     'python': PythonCodeGenerator(),
     'java': JavaCodeGenerator(),
     'typescript': TypeScriptCodeGenerator()
 }
+
+# Add Kessel Run generators if available
+try:
+    from ..generators.microservice_generator import MicroserviceGenerator
+    from ..generators.openapi_generator import OpenAPIGenerator
+    from ..generators.devsecops_generator import DevSecOpsGenerator
+    
+    generators.update({
+        'microservices': MicroserviceGenerator(),
+        'openapi': OpenAPIGenerator(),
+        'devsecops': DevSecOpsGenerator()
+    })
+except ImportError:
+    pass
 
 parser = TextModelParser()
 

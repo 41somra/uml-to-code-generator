@@ -1,0 +1,38 @@
+version: "1.0.0"
+jobs:
+  - type: passive-scan
+    parameters:
+      maxAlertsPerRule: 10
+      scanOnlyInScope: true
+  
+  - type: spider
+    parameters:
+      context: "Default Context"
+      url: "http://localhost:8080"
+      maxDuration: 10
+      maxChildren: 10
+  
+  - type: active-scan
+    parameters:
+      context: "Default Context"
+      policy: "Default Policy"
+      maxRuleDurationInMins: 5
+      maxScanDurationInMins: 10
+  
+  - type: report
+    parameters:
+      template: "traditional-json"
+      reportFile: "/zap/reports/zap-report.json"
+      reportTitle: "Kessel Run Security Test Report"
+      reportDescription: "Security test results for Air Force mission systems"
+
+contexts:
+  - name: "Default Context"
+    includePaths:
+      - "http://localhost:8080/api/.*"
+    excludePaths:
+      - "http://localhost:8080/actuator/.*"
+    authentication:
+      method: "bearer"
+      bearer:
+        token: "test-jwt-token"

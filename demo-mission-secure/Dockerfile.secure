@@ -1,0 +1,58 @@
+# Multi-stage build for enhanced security
+FROM registry1.dso.mil/ironbank/opensource/openjdk/openjdk11:1.11.0 as builder
+
+# Security: Run as non-root user during build
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+USER appuser
+
+WORKDIR /app
+COPY --chown=appuser:appuser pom.xml .
+COPY --chown=appuser:appuser src ./src
+
+# Build application
+RUN mvn clean package -DskipTests
+
+# Runtime stage
+FROM registry1.dso.mil/ironbank/opensource/openjdk/openjdk11-jre:1.11.0
+
+# Security labels
+LABEL name="kessel-run-service" \
+      vendor="U.S. Air Force" \
+      version="1.0.0" \
+      release="1" \
+      summary="Kessel Run Mission Service" \
+      description="Air Force Kessel Run microservice for mission-critical operations" \
+      io.k8s.description="Air Force Kessel Run microservice" \
+      io.k8s.display-name="Kessel Run Service" \
+      io.openshift.tags="kessel-run,airforce,microservice"
+
+# Create non-root user
+RUN groupadd -r kesselrun && useradd -r -g kesselrun kesselrun
+
+# Set working directory
+WORKDIR /app
+
+# Copy application jar
+COPY --from=builder --chown=kesselrun:kesselrun /app/target/*.jar app.jar
+
+# Security: Remove unnecessary packages and files
+RUN microdnf update -y && \
+    microdnf clean all && \
+    rm -rf /var/cache/yum && \
+    rm -rf /tmp/*
+
+# Security: Set file permissions
+RUN chmod 440 app.jar
+
+# Switch to non-root user
+USER kesselrun
+
+# Expose port (non-privileged)
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Security: Use exec form and non-root user
+ENTRYPOINT ["java", "-jar", "-Djava.security.egd=file:/dev/./urandom", "app.jar"]

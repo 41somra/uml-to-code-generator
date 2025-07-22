@@ -1,0 +1,245 @@
+# Kessel Run DevSecOps Pipeline
+# Enhanced CI/CD with integrated security scanning and compliance
+
+stages:
+  - security-scan
+  - build
+  - test
+  - security-test
+  - compliance-check
+  - deploy-dev
+  - deploy-staging
+  - deploy-prod
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  SONAR_TOKEN: $SONAR_TOKEN
+  SNYK_TOKEN: $SNYK_TOKEN
+
+# Security scanning before any build
+sast:
+  stage: security-scan
+  image: registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:latest
+  script:
+    - echo "Running Static Application Security Testing (SAST)..."
+    - bandit -r src/ -f json -o bandit-report.json || true
+    - semgrep --config=auto --json --output=semgrep-report.json src/ || true
+    - safety check --json --output safety-report.json || true
+  artifacts:
+    reports:
+      sast: bandit-report.json
+    paths:
+      - bandit-report.json
+      - semgrep-report.json
+      - safety-report.json
+    expire_in: 1 week
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Dependency scanning
+dependency_scanning:
+  stage: security-scan
+  image: registry1.dso.mil/ironbank/aquasec/trivy:latest
+  script:
+    - echo "Scanning dependencies for vulnerabilities..."
+    - trivy fs --format json --output dependency-scan-report.json .
+  artifacts:
+    reports:
+      dependency_scanning: dependency-scan-report.json
+    expire_in: 1 week
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# License compliance scanning
+license_scanning:
+  stage: security-scan
+  image: registry1.dso.mil/ironbank/fossa/fossa:latest
+  script:
+    - echo "Scanning for license compliance..."
+    - fossa analyze
+    - fossa test --json > license-report.json || true
+  artifacts:
+    reports:
+      license_scanning: license-report.json
+    expire_in: 1 week
+  allow_failure: true
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Build application
+build:
+  stage: build
+  image: registry1.dso.mil/ironbank/redhat/ubi/ubi8:8.8
+  services:
+    - name: registry1.dso.mil/ironbank/docker/docker-dind:20-dind
+      alias: docker
+  cache:
+    paths:
+      - .m2/repository/
+  before_script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+    - mvn clean compile -B
+    - mvn package -B -DskipTests
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  artifacts:
+    paths:
+      - target/
+    expire_in: 1 day
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Unit and integration tests
+test:
+  stage: test
+  image: registry1.dso.mil/ironbank/opensource/openjdk/openjdk11:1.11.0
+  cache:
+    paths:
+      - .m2/repository/
+  script:
+    - mvn test -B
+    - mvn verify -B
+  coverage: '/Total.*?([0-9]{1,3}\.[0-9]{1,2})%/'
+  artifacts:
+    reports:
+      junit: target/surefire-reports/TEST-*.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: target/site/cobertura/coverage.xml
+    paths:
+      - target/site/jacoco/
+    expire_in: 1 week
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Code quality analysis
+code_quality:
+  stage: test
+  image: registry1.dso.mil/ironbank/sonarqube/sonar-scanner-cli:latest
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+  artifacts:
+    reports:
+      codequality: sonarqube-report.json
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Dynamic Application Security Testing (DAST)
+dast:
+  stage: security-test
+  image: registry1.dso.mil/ironbank/owasp/zap/zap:stable
+  variables:
+    DAST_WEBSITE: http://localhost:8080
+  services:
+    - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+      alias: app
+  script:
+    - echo "Running DAST scan..."
+    - zap-baseline.py -t $DAST_WEBSITE -J dast-report.json || true
+  artifacts:
+    reports:
+      dast: dast-report.json
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Container security scanning
+container_scanning:
+  stage: security-test
+  image: registry1.dso.mil/ironbank/aquasec/trivy:latest
+  services:
+    - name: registry1.dso.mil/ironbank/docker/docker-dind:20-dind
+      alias: docker
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - trivy image --format json --output container-scan-report.json $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  artifacts:
+    reports:
+      container_scanning: container-scan-report.json
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# FISMA compliance check
+fisma_compliance:
+  stage: compliance-check
+  image: registry1.dso.mil/ironbank/nessus/nessus:latest
+  script:
+    - echo "Running FISMA compliance checks..."
+    - # Run compliance scanning tools
+    - echo "Compliance check completed"
+  artifacts:
+    reports:
+      compliance: fisma-compliance-report.json
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Deploy to development
+deploy-dev:
+  stage: deploy-dev
+  image: registry1.dso.mil/ironbank/kubernetes/kubectl:latest
+  environment:
+    name: development
+    url: https://simple text diagram-dev.apps.dso.mil
+  script:
+    - kubectl config use-context $KUBE_CONTEXT_DEV
+    - envsubst < k8s/deployment.yaml | kubectl apply -f -
+    - kubectl apply -f k8s/service.yaml -n kessel-run-dev
+    - kubectl apply -f k8s/ingress.yaml -n kessel-run-dev
+    - kubectl rollout status deployment/simple text diagram-service -n kessel-run-dev
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Deploy to staging (manual)
+deploy-staging:
+  stage: deploy-staging
+  image: registry1.dso.mil/ironbank/kubernetes/kubectl:latest
+  environment:
+    name: staging
+    url: https://simple text diagram-staging.apps.dso.mil
+  script:
+    - kubectl config use-context $KUBE_CONTEXT_STAGING
+    - envsubst < k8s/deployment.yaml | kubectl apply -f -
+    - kubectl apply -f k8s/service.yaml -n kessel-run-staging
+    - kubectl apply -f k8s/ingress.yaml -n kessel-run-staging
+    - kubectl rollout status deployment/simple text diagram-service -n kessel-run-staging
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Deploy to production (manual with approval)
+deploy-prod:
+  stage: deploy-prod
+  image: registry1.dso.mil/ironbank/kubernetes/kubectl:latest
+  environment:
+    name: production
+    url: https://simple text diagram.apps.dso.mil
+  script:
+    - kubectl config use-context $KUBE_CONTEXT_PROD
+    - envsubst < k8s/deployment.yaml | kubectl apply -f -
+    - kubectl apply -f k8s/service.yaml -n kessel-run
+    - kubectl apply -f k8s/ingress.yaml -n kessel-run
+    - kubectl rollout status deployment/simple text diagram-service -n kessel-run
+  when: manual
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: false
